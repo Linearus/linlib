@@ -1,0 +1,94 @@
+--  linlib by Linearus
+--  License GPLv3
+--  https://raw.github.com/Linearus/linlib/master/License
+--  
+
+--[ Library Variables ]--
+
+version = "linlib-0.1"
+local updateUrl = "https://raw.github.com/Linearus/linlib/master/data"
+
+--[ Library Functions ]--
+
+function getVersion()
+  return version
+end
+function getNewVersion()
+	if http then
+		local sResponse = http.get(updateUrl)
+		sLatestVerion = sResponse.readAll()
+		return sLatestVerion
+	else
+		return false
+	end
+end
+function checkUpdate()
+	if sLatestVersion ~= version then
+		return true
+	else
+		return false
+	end
+end
+
+--[ Functions ]--
+
+function centreText(arg1)
+	if type(arg1) == "string" then
+		local w, h = term.getSize()
+		local sLen = arg1:len()
+		local hW = tonumber( w / 2 )
+		local hL = tonumber( sLen / 2 )
+		local nRe = tonumber( hW - hL )
+		return nRe
+	end
+	return nil
+end
+function openModem()
+	for _,v in pairs( rs.getSides() ) do
+		if peripheral.getType( v ) == "modem" then
+			rednet.open( v )
+		end
+	end
+end
+function login(arg1, arg2, arg3, arg4)
+	for i, v in ipairs(arg3) do
+		if arg1 == v then
+			password = arg4[i]
+			break
+		end
+	end
+	return arg2 == password
+end
+function mouseClick()
+	sEvent, button, xPos, yPos = os.pullEvent("mouse_click")
+	return xPos, yPos, button, sEvent
+end
+function mouseClick()
+	sEvent, param = os.pullEvent("key")
+	return peram, sEvent
+end
+function loadAPIS(arg1)
+	local tFile = fs.list( tostring(arg1) )
+	for n, sFile in ipairs( tFile ) do
+		if string.sub( sFile, 1, 1 ) ~= "." then
+			local sPath = fs.combine( arg1, sFile )
+			if not fs.isDir( sPath ) then
+				os.loadAPI( sPath )
+				return true
+			end
+		end
+	end
+end
+function loginOnline(arg1, arg2)
+	local user = textutils.urlEncode(arg1)
+	local pass = textutils.urlEncode(arg2)
+	http.request("http://login.minecraft.net/?user=" .. user .. "&password=" .. pass .. "&version=13")
+	local sEvent, sUrl, sResponse = os.pullEvent()
+	if sEvent == "http_success" then
+		local _sResponse = { sResponse.readAll() }
+		if string.find(tostring(_sResponse[1]), "deprecated") then
+			return true
+		end
+	end
+	return false
+end
