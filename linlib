@@ -11,7 +11,7 @@ local updateUrl = "https://raw.github.com/Linearus/linlib/master/data"
 --[ Library Functions ]--
 
 function getVersion()
-  return version
+	return version
 end
 function getNewVersion()
 	if http then
@@ -63,7 +63,7 @@ function mouseClick()
 	sEvent, button, xPos, yPos = os.pullEvent("mouse_click")
 	return xPos, yPos, button, sEvent
 end
-function mouseClick()
+function keyInput()
 	sEvent, param = os.pullEvent("key")
 	return peram, sEvent
 end
